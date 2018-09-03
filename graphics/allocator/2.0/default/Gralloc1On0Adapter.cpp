@@ -29,7 +29,6 @@
 #include <sync/sync.h>
 
 #include <inttypes.h>
-#include <unistd.h>
 
 template <typename PFN, typename T>
 static gralloc1_function_pointer_t asFP(T function)
