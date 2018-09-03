@@ -3,12 +3,9 @@ cc_library_shared {
     defaults: ["hidl_defaults"],
     vendor: true,
     relative_install_path: "hw",
-    srcs: ["passthrough.cpp"],
+    srcs: ["Gralloc.cpp"],
     static_libs: [
         "android.hardware.graphics.allocator@2.0-passthrough",
-    ],
-    header_libs: [
-        "android.hardware.graphics.allocator@2.0-hal",
     ],
     shared_libs: [
         "android.hardware.graphics.allocator@2.0",

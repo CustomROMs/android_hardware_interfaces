@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-#include <allocator-passthrough/2.0/GrallocLoader.h>
+#ifndef ANDROID_HARDWARE_GRAPHICS_ALLOCATOR_V2_0_GRALLOC_H
+#define ANDROID_HARDWARE_GRAPHICS_ALLOCATOR_V2_0_GRALLOC_H
+
 #include <android/hardware/graphics/allocator/2.0/IAllocator.h>
 
-using android::hardware::graphics::allocator::V2_0::IAllocator;
-using android::hardware::graphics::allocator::V2_0::passthrough::GrallocLoader;
+namespace android {
+namespace hardware {
+namespace graphics {
+namespace allocator {
+namespace V2_0 {
+namespace implementation {
 
-extern "C" IAllocator* HIDL_FETCH_IAllocator(const char* /* name */) {
-    return GrallocLoader::load();
-}
+extern "C" IAllocator* HIDL_FETCH_IAllocator(const char* name);
+
+}  // namespace implementation
+}  // namespace V2_0
+}  // namespace allocator
+}  // namespace graphics
+}  // namespace hardware
+}  // namespace android
+
+#endif  // ANDROID_HARDWARE_GRAPHICS_ALLOCATOR_V2_0_GRALLOC_H
