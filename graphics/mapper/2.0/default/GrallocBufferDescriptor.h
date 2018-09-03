@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#pragma once
+#ifndef ANDROID_HARDWARE_GRAPHICS_MAPPER_V2_0_GRALLOCBUFFERDESCRIPTOR_H
+#define ANDROID_HARDWARE_GRAPHICS_MAPPER_V2_0_GRALLOCBUFFERDESCRIPTOR_H
 
 #include <android/hardware/graphics/mapper/2.0/IMapper.h>
 
@@ -23,7 +24,7 @@ namespace hardware {
 namespace graphics {
 namespace mapper {
 namespace V2_0 {
-namespace passthrough {
+namespace implementation {
 
 using android::hardware::graphics::common::V1_0::PixelFormat;
 
@@ -49,8 +50,9 @@ inline BufferDescriptor grallocEncodeBufferDescriptor(
     return descriptor;
 }
 
-inline bool grallocDecodeBufferDescriptor(const BufferDescriptor& descriptor,
-                                          IMapper::BufferDescriptorInfo* outDescriptorInfo) {
+inline bool grallocDecodeBufferDescriptor(
+    const BufferDescriptor& descriptor,
+    IMapper::BufferDescriptorInfo* outDescriptorInfo) {
     if (descriptor.size() != grallocBufferDescriptorSize ||
         descriptor[0] != grallocBufferDescriptorMagicVersion) {
         return false;
@@ -67,9 +69,11 @@ inline bool grallocDecodeBufferDescriptor(const BufferDescriptor& descriptor,
     return true;
 }
 
-}  // namespace passthrough
+}  // namespace implementation
 }  // namespace V2_0
 }  // namespace mapper
 }  // namespace graphics
 }  // namespace hardware
 }  // namespace android
+
+#endif  // ANDROID_HARDWARE_GRAPHICS_MAPPER_V2_0_GRALLOCBUFFERDESCRIPTOR_H
