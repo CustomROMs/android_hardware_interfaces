@@ -12,23 +12,27 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
-cc_library_shared {
-    name: "android.hardware.graphics.mapper@2.0-impl",
+cc_library_static {
+    name: "android.hardware.graphics.composer@2.1-vts",
     defaults: ["hidl_defaults"],
-    vendor: true,
-    relative_install_path: "hw",
-    srcs: ["GrallocMapper.cpp", "Gralloc0Mapper.cpp", "Gralloc1Mapper.cpp"],
-    cppflags: ["-Wall", "-Wextra"],
-    shared_libs: [
-        "android.hardware.graphics.mapper@2.0",
-        "libbase",
-        "libcutils",
-        "libhardware",
-        "libhidlbase",
-        "libhidltransport",
-        "liblog",
-        "libsync",
-        "libutils",
+    srcs: [
+        "ComposerVts.cpp",
+        "GraphicsComposerCallback.cpp",
+        "TestCommandReader.cpp",
     ],
+    static_libs: [
+        "VtsHalHidlTargetTestBase",
+        "android.hardware.graphics.composer@2.1",
+    ],
+    header_libs: [
+        "android.hardware.graphics.composer@2.1-command-buffer",
+    ],
+    cflags: [
+        "-O0",
+        "-g",
+        "-DLOG_TAG=\"ComposerVts\"",
+    ],
+    export_include_dirs: ["include"],
 }
