@@ -654,7 +654,7 @@ HWC2OnFbAdapter::HWC2OnFbAdapter(framebuffer_device_t* fbDevice)
     mFbInfo.name = "fbdev";
     mFbInfo.width = mFbDevice->width;
     mFbInfo.height = mFbDevice->height;
-    mFbInfo.format = mFbDevice->format;
+    mFbInfo.format = /*mFbDevice->format*/ 0x4 /*RGB_565*/;
     mFbInfo.vsync_period_ns = int(1e9 / mFbDevice->fps);
     mFbInfo.xdpi_scaled = int(mFbDevice->xdpi * 1000.0f);
     mFbInfo.ydpi_scaled = int(mFbDevice->ydpi * 1000.0f);
