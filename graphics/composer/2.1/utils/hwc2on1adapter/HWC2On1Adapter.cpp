@@ -1251,10 +1251,12 @@ void HWC2On1Adapter::Display::generateChanges() {
     for (size_t hwc1Id = 0; hwc1Id < numLayers; ++hwc1Id) {
         const auto& receivedLayer = mHwc1RequestedContents->hwLayers[hwc1Id];
         if (mHwc1LayerMap.count(hwc1Id) == 0) {
+#if 0
             ALOGE_IF(receivedLayer.compositionType != HWC_FRAMEBUFFER_TARGET,
                     "generateChanges: HWC1 layer %zd doesn't have a"
                     " matching HWC2 layer, and isn't the framebuffer target",
                     hwc1Id);
+#endif
             continue;
         }
 
@@ -1295,10 +1297,13 @@ Error HWC2On1Adapter::Display::set(hwc_display_contents_1& hwcContents) {
     if (clientTargetLayer.compositionType == HWC_FRAMEBUFFER_TARGET) {
         clientTargetLayer.handle = mClientTarget.getBuffer();
         clientTargetLayer.acquireFenceFd = mClientTarget.getFence();
-    } else {
+    }
+#if 0
+    else {
         ALOGE("[%" PRIu64 "] set: last HWC layer wasn't FRAMEBUFFER_TARGET",
                 mId);
     }
+#endif
 
     mChanges.reset();
 
@@ -1318,11 +1323,13 @@ void HWC2On1Adapter::Display::addReleaseFences(
     for (size_t hwc1Id = 0; hwc1Id < numLayers; ++hwc1Id) {
         const auto& receivedLayer = hwcContents.hwLayers[hwc1Id];
         if (mHwc1LayerMap.count(hwc1Id) == 0) {
+#if 0
             if (receivedLayer.compositionType != HWC_FRAMEBUFFER_TARGET) {
                 ALOGE("addReleaseFences: HWC1 layer %zd doesn't have a"
                         " matching HWC2 layer, and isn't the framebuffer"
                         " target", hwc1Id);
             }
+#endif
             // Close the framebuffer target release fence since we will use the
             // display retire fence instead
             if (receivedLayer.releaseFenceFd != -1) {
