@@ -101,7 +101,6 @@ Return<void> AGnssRil::setRefLocation(const IAGnssRil::AGnssRefLocation& aGnssRe
         .mcc = cellID.mcc,
         .mnc = cellID.mnc,
         .lac = cellID.lac,
-        .psc = cellID.psc,
         .cid = cellID.cid,
         .tac = cellID.tac,
         .pcid = cellID.pcid
