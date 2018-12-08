@@ -93,6 +93,19 @@ Sensors::Sensors()
         return;
     }
 
+    // Require all the old HAL APIs to be present except for injection, which
+    // is considered optional.
+    CHECK_GE(getHalDeviceVersion(), SENSORS_DEVICE_API_VERSION_1_3);
+
+    if (getHalDeviceVersion() == SENSORS_DEVICE_API_VERSION_1_4) {
+        if (mSensorDevice->inject_sensor_data == nullptr) {
+            LOG(ERROR) << "HAL specifies version 1.4, but does not implement inject_sensor_data()";
+        }
+        if (mSensorModule->set_operation_mode == nullptr) {
+            LOG(ERROR) << "HAL specifies version 1.4, but does not implement set_operation_mode()";
+        }
+    }
+
     mInitCheck = OK;
 }
 
@@ -222,15 +235,17 @@ Return<Result> Sensors::batch(
         int32_t sensor_handle,
         int64_t sampling_period_ns,
         int64_t max_report_latency_ns) {
-    (void)sensor_handle;
-    (void)sampling_period_ns;
-    (void)max_report_latency_ns;
-    return Result::OK;
+    return ResultFromStatus(
+            mSensorDevice->batch(
+                mSensorDevice,
+                sensor_handle,
+                0, /*flags*/
+                sampling_period_ns,
+                max_report_latency_ns));
 }
 
 Return<Result> Sensors::flush(int32_t sensor_handle) {
-    (void)sensor_handle;
-    return Result::OK;
+    return ResultFromStatus(mSensorDevice->flush(mSensorDevice, sensor_handle));
 }
 
 Return<Result> Sensors::injectSensorData(const Event& event) {
@@ -248,16 +263,40 @@ Return<Result> Sensors::injectSensorData(const Event& event) {
 
 Return<void> Sensors::registerDirectChannel(
         const SharedMemInfo& mem, registerDirectChannel_cb _hidl_cb) {
-    (void)mem;
-    (void)_hidl_cb;
-    // HAL does not support
-    _hidl_cb(Result::INVALID_OPERATION, -1);
+    if (mSensorDevice->register_direct_channel == nullptr
+            || mSensorDevice->config_direct_report == nullptr) {
+        // HAL does not support
+        _hidl_cb(Result::INVALID_OPERATION, -1);
+        return Void();
+    }
+
+    sensors_direct_mem_t m;
+    if (!convertFromSharedMemInfo(mem, &m)) {
+      _hidl_cb(Result::BAD_VALUE, -1);
+      return Void();
+    }
+
+    int err = mSensorDevice->register_direct_channel(mSensorDevice, &m, -1);
+
+    if (err < 0) {
+        _hidl_cb(ResultFromStatus(err), -1);
+    } else {
+        int32_t channelHandle = static_cast<int32_t>(err);
+        _hidl_cb(Result::OK, channelHandle);
+    }
     return Void();
 }
 
 Return<Result> Sensors::unregisterDirectChannel(int32_t channelHandle) {
-    (void)channelHandle;
-    return Result::INVALID_OPERATION;
+    if (mSensorDevice->register_direct_channel == nullptr
+            || mSensorDevice->config_direct_report == nullptr) {
+        // HAL does not support
+        return Result::INVALID_OPERATION;
+    }
+
+    mSensorDevice->register_direct_channel(mSensorDevice, nullptr, channelHandle);
+
+    return Result::OK;
 }
 
 Return<void> Sensors::configDirectReport(
