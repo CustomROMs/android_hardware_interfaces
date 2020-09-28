@@ -158,15 +158,15 @@ YCbCrLayout HandleImporter::lockYCbCrInternal<IMapperV4, MapperErrorV4>(
                 });
 
     std::vector<PlaneLayout> planeLayouts;
-    gralloc4::decodePlaneLayouts(encodedPlaneLayouts, &planeLayouts);
+    //gralloc4::decodePlaneLayouts(encodedPlaneLayouts, &planeLayouts);
 
     for (const auto& planeLayout : planeLayouts) {
         for (const auto& planeLayoutComponent : planeLayout.components) {
             const auto& type = planeLayoutComponent.type;
 
-            if (!gralloc4::isStandardPlaneLayoutComponentType(type)) {
+            /*if (!gralloc4::isStandardPlaneLayoutComponentType(type)) {
                 continue;
-            }
+            }*/
 
             uint8_t* data = reinterpret_cast<uint8_t*>(mapped);
             data += planeLayout.offsetInBytes;
